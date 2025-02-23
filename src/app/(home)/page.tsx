@@ -5,7 +5,12 @@ import axios from "axios";
 import { useStore } from "@/store/useStore";
 import { Card, CardContent, CardFooter } from "@/components/common/Card";
 import { Button } from "@/components/common/Button";
-
+interface Movie {
+  id: number;
+  title?: string;
+  name?: string;
+  poster_path: string;
+}
 const API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY;
 
 export default function Home() {
@@ -109,11 +114,15 @@ export default function Home() {
                     const existingWatchlist = JSON.parse(
                       localStorage.getItem("watchlist") || "[]"
                     );
-                    const updatedWatchlist = [...existingWatchlist, movie];
-                    localStorage.setItem(
-                      "watchlist",
-                      JSON.stringify(updatedWatchlist)
-                    );
+
+                    // Prevent duplicates
+                    if (!existingWatchlist.some((m) => m.id === movie.id)) {
+                      const updatedWatchlist = [...existingWatchlist, movie];
+                      localStorage.setItem(
+                        "watchlist",
+                        JSON.stringify(updatedWatchlist)
+                      );
+                    }
                   }}
                 >
                   <svg
@@ -131,9 +140,24 @@ export default function Home() {
                     />
                   </svg>
                 </Button>
+
                 <Button
                   variant={"ghost"}
                   className="text-amber-600 hover:text-amber-500 hover:bg-black"
+                  onClick={() => {
+                    const existingFavorite = JSON.parse(
+                      localStorage.getItem("favorite") || "[]"
+                    );
+
+                    // Prevent duplicates
+                    if (!existingFavorite.some((m) => m.id === movie.id)) {
+                      const updatedFavorite = [...existingFavorite, movie];
+                      localStorage.setItem(
+                        "favorite",
+                        JSON.stringify(updatedFavorite)
+                      );
+                    }
+                  }}
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
