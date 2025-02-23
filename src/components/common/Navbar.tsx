@@ -1,17 +1,25 @@
+"use client";
+import { useStore } from "@/store/useStore";
 import Link from "next/link";
 
 const Navbar: React.FC = () => {
+  const { setSearchQuery } = useStore();
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
+
   return (
     <nav className="bg-black text-white py-4 px-6 flex justify-between items-center border-b-2 border-gray-600">
       <div className="text-xl font-bold">MoveIT</div>
 
-      {/* Container for the search form and nav links */}
       <div className="flex items-center space-x-6">
         {/* Search Form */}
         <form action="" className="relative w-max">
           <input
             type="search"
             className="peer cursor-pointer relative z-10 h-12 w-12 rounded-full border bg-transparent pl-12 outline-none focus:w-full focus:cursor-text focus:border-white focus:pl-16 focus:pr-4"
+            onChange={handleSearchChange}
           />
           <svg
             xmlns="http://www.w3.org/2000/svg"

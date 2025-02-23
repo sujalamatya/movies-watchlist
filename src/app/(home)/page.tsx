@@ -2,34 +2,33 @@
 
 import { useEffect, useState } from "react";
 import axios from "axios";
-import {
-  Card,
-  CardHeader,
-  CardContent,
-  CardFooter,
-} from "@/components/common/Card";
+import { useStore } from "@/store/useStore";
+import { Card, CardContent, CardFooter } from "@/components/common/Card";
 import { Button } from "@/components/common/Button";
 
-const API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY; // Ensure this is set in .env.local
+const API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY;
 
 export default function Home() {
+  const searchQuery = useStore((state) => state.searchQuery);
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchMovies = async () => {
+      setLoading(true);
       try {
-        const response = await axios.get(
-          "https://api.themoviedb.org/3/trending/all/week",
-          {
-            headers: {
-              Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIwNWQzYTU2N2QxNmMzMjRkZTgwNzg5ZmQyYjgyMjM3MyIsIm5iZiI6MTc0MDI3OTYwMy44MSwic3ViIjoiNjdiYThmMzNkMzYzMTY5NDY2NDY2NWQ4Iiwic2NvcGVzIjpbImFwaV9yZWFkIl0sInZlcnNpb24iOjF9.Sg9SNdJT5lsxACj8deIw5ktrDB-j0jqQH3_3y2dX824
-`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const endpoint = searchQuery
+          ? `https://api.themoviedb.org/3/search/movie?query=${searchQuery}`
+          : "https://api.themoviedb.org/3/trending/all/week";
+
+        const response = await axios.get(endpoint, {
+          headers: {
+            Authorization: `Bearer ${API_KEY}`,
+            "Content-Type": "application/json",
+          },
+        });
+
         setMovies(response.data.results);
       } catch (err) {
         setError("Failed to fetch movies");
@@ -39,16 +38,19 @@ export default function Home() {
     };
 
     fetchMovies();
-  }, []);
+  }, [searchQuery]); // Refetch query change
 
   return (
     <div className="flex flex-col justify-center items-center bg-black">
       {error && <p className="text-red-500">{error}</p>}
       <h1 className="flex justify-center text-3xl font-bold p-5 mt-8 text-amber-600">
-        Trending Movies This Week
+        {searchQuery
+          ? `Search Results for "${searchQuery}"`
+          : "Trending Movies This Week"}
       </h1>
+
       {loading && (
-        <div className=" flex text-3xl h-[85dvh] items-center text-white">
+        <div className="flex text-3xl h-[85dvh] items-center text-white">
           <svg
             className="mr-3 -ml-1 size-5 animate-spin text-white"
             xmlns="http://www.w3.org/2000/svg"
@@ -61,7 +63,7 @@ export default function Home() {
               cy="12"
               r="10"
               stroke="currentColor"
-              stroke-width="4"
+              strokeWidth="4"
             ></circle>
             <path
               className="opacity-75"
@@ -72,6 +74,7 @@ export default function Home() {
           Loading movies...
         </div>
       )}
+
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-y-6 gap-x-6 mt-4">
         {movies.map((movie: any) => (
           <Card
