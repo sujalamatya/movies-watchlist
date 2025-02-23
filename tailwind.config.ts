@@ -11,6 +11,12 @@ export default {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        primary: "#6366f1",
+        accent: "#f3f4f6",
+        "accent-foreground": "#1f2937",
+        card: "#ffffff",
+        "card-foreground": "#1f2937",
+        "muted-foreground": "#6b7280",
       },
     },
   },
