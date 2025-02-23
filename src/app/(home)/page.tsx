@@ -105,6 +105,16 @@ export default function Home() {
                 <Button
                   variant={"ghost"}
                   className="text-amber-600 hover:text-amber-500 hover:bg-black"
+                  onClick={() => {
+                    const existingWatchlist = JSON.parse(
+                      localStorage.getItem("watchlist") || "[]"
+                    );
+                    const updatedWatchlist = [...existingWatchlist, movie];
+                    localStorage.setItem(
+                      "watchlist",
+                      JSON.stringify(updatedWatchlist)
+                    );
+                  }}
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
