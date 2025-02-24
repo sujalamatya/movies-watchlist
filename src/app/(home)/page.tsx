@@ -5,17 +5,26 @@ import axios from "axios";
 import { useStore } from "@/store/useStore";
 import { Card, CardContent, CardFooter } from "@/components/common/Card";
 import { Button } from "@/components/common/Button";
+
 interface Movie {
   id: number;
   title?: string;
   name?: string;
   poster_path: string;
+  overview: string;
 }
+
 const API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY;
 
 export default function Home() {
   const searchQuery = useStore((state) => state.searchQuery);
-  const [movies, setMovies] = useState([]);
+  const watchlist = useStore((state) => state.watchlist);
+  const favorite = useStore((state) => state.favorite);
+  const setWatchlist = useStore((state) => state.setWatchlist);
+  const removeFromWatchlist = useStore((state) => state.removeFromWatchlist);
+  const setFavorite = useStore((state) => state.setFavorite);
+
+  const [movies, setMovies] = useState<Movie[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -44,6 +53,14 @@ export default function Home() {
 
     fetchMovies();
   }, [searchQuery]); // Refetch query change
+
+  const isInWatchlist = (movieId: number) => {
+    return watchlist.some((m) => m.id === movieId);
+  };
+
+  const isInFavorite = (movieId: number) => {
+    return favorite.some((m) => m.id === movieId);
+  };
 
   return (
     <div className="flex flex-col justify-center items-center bg-black">
@@ -81,7 +98,7 @@ export default function Home() {
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-y-6 gap-x-6 mt-4">
-        {movies.map((movie: any) => (
+        {movies.map((movie: Movie) => (
           <Card
             key={movie.id}
             className="w-80 shadow-lg relative overflow-hidden bg-black border-amber-600/50 hover:border-amber-600"
@@ -111,23 +128,16 @@ export default function Home() {
                   variant={"ghost"}
                   className="text-amber-600 hover:text-amber-500 hover:bg-black"
                   onClick={() => {
-                    const existingWatchlist = JSON.parse(
-                      localStorage.getItem("watchlist") || "[]"
-                    );
-
-                    // Prevent duplicates
-                    if (!existingWatchlist.some((m) => m.id === movie.id)) {
-                      const updatedWatchlist = [...existingWatchlist, movie];
-                      localStorage.setItem(
-                        "watchlist",
-                        JSON.stringify(updatedWatchlist)
-                      );
+                    if (isInWatchlist(movie.id)) {
+                      removeFromWatchlist(movie.id);
+                    } else {
+                      setWatchlist(movie);
                     }
                   }}
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
+                    fill={isInWatchlist(movie.id) ? "currentColor" : "none"}
                     viewBox="0 0 24 24"
                     strokeWidth={1.5}
                     stroke="currentColor"
@@ -145,23 +155,12 @@ export default function Home() {
                   variant={"ghost"}
                   className="text-amber-600 hover:text-amber-500 hover:bg-black"
                   onClick={() => {
-                    const existingFavorite = JSON.parse(
-                      localStorage.getItem("favorite") || "[]"
-                    );
-
-                    // Prevent duplicates
-                    if (!existingFavorite.some((m) => m.id === movie.id)) {
-                      const updatedFavorite = [...existingFavorite, movie];
-                      localStorage.setItem(
-                        "favorite",
-                        JSON.stringify(updatedFavorite)
-                      );
-                    }
+                    setFavorite(movie);
                   }}
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
+                    fill={isInFavorite(movie.id) ? "currentColor" : "none"}
                     viewBox="0 0 24 24"
                     strokeWidth={1.5}
                     stroke="currentColor"
