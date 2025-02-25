@@ -1,20 +1,11 @@
+//landing page
 "use client";
 
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { useStore } from "@/store/useStore";
 import { Card, CardContent, CardFooter } from "@/components/common/Card";
 import { Button } from "@/components/common/Button";
-
-interface Movie {
-  id: number;
-  title?: string;
-  name?: string;
-  poster_path: string;
-  overview: string;
-}
-
-const API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY;
+import { fetchTrendingMovies, searchMovies, Movie } from "@/api/movies";
 
 export default function Home() {
   const searchQuery = useStore((state) => state.searchQuery);
@@ -32,23 +23,16 @@ export default function Home() {
     const fetchMovies = async () => {
       setLoading(true);
       try {
-        const endpoint = searchQuery
-          ? `https://api.themoviedb.org/3/search/movie?query=${searchQuery}`
-          : "https://api.themoviedb.org/3/trending/all/week";
-
-        const response = await axios.get(endpoint, {
-          headers: {
-            Authorization: `Bearer ${API_KEY}`,
-            "Content-Type": "application/json",
-          },
-        });
+        const movies = searchQuery
+          ? await searchMovies(searchQuery)
+          : await fetchTrendingMovies();
 
         // Check if no movies are found for the search query
-        if (searchQuery && response.data.results.length === 0) {
+        if (searchQuery && movies.length === 0) {
           setError("Invalid Input: No movies found.");
           setMovies([]);
         } else {
-          setMovies(response.data.results);
+          setMovies(movies);
           setError(null);
         }
       } catch (err) {
@@ -140,6 +124,7 @@ export default function Home() {
                 <div className="flex justify-between w-full">
                   <Button
                     variant={"ghost"}
+                    size={"icon"}
                     className="text-amber-600 hover:text-amber-500 hover:bg-black"
                     onClick={() => {
                       if (isInWatchlist(movie.id)) {
@@ -167,6 +152,7 @@ export default function Home() {
 
                   <Button
                     variant={"ghost"}
+                    size={"icon"}
                     className="text-amber-600 hover:text-amber-500 hover:bg-black"
                     onClick={() => {
                       setFavorite(movie);

@@ -1,3 +1,4 @@
+//watchlist and watched page
 "use client";
 
 import React from "react";
