@@ -2,7 +2,9 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
-First, run the development server:
+First, get the tmdb api key from https://www.themoviedb.org/settings/api (store it in the .env file).
+
+run the development server:
 
 ```bash
 install node
