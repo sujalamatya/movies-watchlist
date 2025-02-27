@@ -1,35 +1,44 @@
-//favorite page
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
+import { Movie } from "@/api/movies";
 import { Card, CardContent, CardFooter } from "@/components/common/Card";
 import { Button } from "@/components/common/Button";
+import Image from "next/image";
 
 export default function Favorites() {
-  const [favorites, setFavorites] = useState<any[]>([]);
+  const [favorites, setFavorites] = useState<Movie[]>([]);
+  const [isClient, setIsClient] = useState(false); // State to check if we're on the client side
 
   useEffect(() => {
-    const storedFavorites = JSON.parse(
-      localStorage.getItem("favorite") || "[]"
-    );
-    setFavorites(storedFavorites);
+    // Set isClient to true once the component is mounted on the client
+    setIsClient(true);
+
+    if (typeof window !== "undefined") {
+      // Ensure localStorage is accessed only in the client environment
+      const storedFavorites: Movie[] = JSON.parse(
+        localStorage.getItem("favorite") || "[]"
+      );
+      setFavorites(storedFavorites);
+    }
   }, []);
 
-  const toggleFavorite = (movie: any) => {
+  const toggleFavorite = (movie: Movie) => {
     const isFavorite = favorites.some((m) => m.id === movie.id);
-    let updatedFavorites;
-
-    if (isFavorite) {
-      // Remove from favorites
-      updatedFavorites = favorites.filter((m) => m.id !== movie.id);
-    } else {
-      // Add to favorites
-      updatedFavorites = [...favorites, movie];
-    }
+    const updatedFavorites = isFavorite
+      ? favorites.filter((m) => m.id !== movie.id)
+      : [...favorites, movie];
 
     setFavorites(updatedFavorites);
-    localStorage.setItem("favorite", JSON.stringify(updatedFavorites));
+    if (typeof window !== "undefined") {
+      localStorage.setItem("favorite", JSON.stringify(updatedFavorites));
+    }
   };
+
+  if (!isClient) {
+    // Prevent rendering on the server side until isClient is true
+    return null;
+  }
 
   return (
     <div className="bg-black w-full min-h-screen text-white p-6">
@@ -48,9 +57,11 @@ export default function Favorites() {
             >
               <CardContent className="relative">
                 <div className="relative">
-                  <img
+                  <Image
                     src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                    alt={movie.title || movie.name}
+                    alt={movie.title || movie.name || "Movie Poster"}
+                    width={500}
+                    height={750}
                     className="w-full h-full object-cover rounded transition-all duration-300 ease-in-out"
                   />
                   <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 hover:opacity-100 transition-opacity duration-300">

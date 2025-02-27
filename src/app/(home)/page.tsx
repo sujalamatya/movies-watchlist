@@ -1,4 +1,3 @@
-//landing page
 "use client";
 
 import { useEffect, useState } from "react";
@@ -6,6 +5,7 @@ import { useStore } from "@/store/useStore";
 import { Card, CardContent, CardFooter } from "@/components/common/Card";
 import { Button } from "@/components/common/Button";
 import { fetchTrendingMovies, searchMovies, Movie } from "@/api/movies";
+import Image from "next/image";
 
 export default function Home() {
   const searchQuery = useStore((state) => state.searchQuery);
@@ -27,7 +27,6 @@ export default function Home() {
           ? await searchMovies(searchQuery)
           : await fetchTrendingMovies();
 
-        // Check if no movies are found for the search query
         if (searchQuery && movies.length === 0) {
           setError("Invalid Input: No movies found.");
           setMovies([]);
@@ -35,7 +34,8 @@ export default function Home() {
           setMovies(movies);
           setError(null);
         }
-      } catch (err) {
+      } catch (error) {
+        console.error("Error fetching movies:", error);
         setError("Failed to fetch movies");
       } finally {
         setLoading(false);
@@ -43,15 +43,12 @@ export default function Home() {
     };
 
     fetchMovies();
-  }, [searchQuery]); // Refetch query change
+  }, [searchQuery]);
 
-  const isInWatchlist = (movieId: number) => {
-    return watchlist.some((m) => m.id === movieId);
-  };
-
-  const isInFavorite = (movieId: number) => {
-    return favorite.some((m) => m.id === movieId);
-  };
+  const isInWatchlist = (movieId: number) =>
+    watchlist.some((m) => m.id === movieId);
+  const isInFavorite = (movieId: number) =>
+    favorite.some((m) => m.id === movieId);
 
   return (
     <div className="flex flex-col justify-center items-center bg-black">
@@ -103,9 +100,11 @@ export default function Home() {
             >
               <CardContent className="relative">
                 <div className="relative">
-                  <img
+                  <Image
                     src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                    alt={movie.title || movie.name}
+                    alt={movie.title || movie.name || "Movie Poster"}
+                    width={500}
+                    height={750}
                     className="w-full h-full object-cover rounded transition-all duration-300 ease-in-out"
                   />
                   <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 hover:opacity-100 transition-opacity duration-300">
@@ -169,7 +168,7 @@ export default function Home() {
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"
+                        d="M12 21l-5.5-5.5A6 6 0 0 1 12 3a6 6 0 0 1 5.5 12.5L12 21z"
                       />
                     </svg>
                   </Button>

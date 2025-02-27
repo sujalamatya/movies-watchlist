@@ -1,7 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  images: {
+    domains: ["image.tmdb.org"], // Add image.tmdb.org to the allowed domains
+  },
 };
 
 export default nextConfig;

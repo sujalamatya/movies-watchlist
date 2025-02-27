@@ -1,8 +1,9 @@
 import React from "react";
 import { cn } from "@/lib/utils";
 
+// Define the Card component with default className
 const Card = ({
-  className,
+  className = "",
   children,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) => {
@@ -19,8 +20,9 @@ const Card = ({
   );
 };
 
+// Define the CardHeader component
 const CardHeader = ({
-  className,
+  className = "",
   children,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) => {
@@ -31,8 +33,9 @@ const CardHeader = ({
   );
 };
 
+// Define the CardContent component
 const CardContent = ({
-  className,
+  className = "",
   children,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) => {
@@ -43,8 +46,9 @@ const CardContent = ({
   );
 };
 
+// Define the CardFooter component
 const CardFooter = ({
-  className,
+  className = "",
   children,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) => {
