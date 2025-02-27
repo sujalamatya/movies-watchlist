@@ -22,6 +22,7 @@ export default function Page() {
     removeFromWatchlist,
     removeFromWatched,
     setFavorite,
+    setWatched,
   } = useStore();
 
   const handleDragStart = (event: React.DragEvent, movie: Movie) => {
@@ -32,7 +33,7 @@ export default function Page() {
     event.preventDefault();
     const movie: Movie = JSON.parse(event.dataTransfer.getData("movie"));
     removeFromWatchlist(movie.id);
-    setFavorite(movie);
+    setWatched(movie);
   };
 
   const allowDrop = (event: React.DragEvent) => {
