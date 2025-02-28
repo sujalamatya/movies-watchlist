@@ -46,7 +46,7 @@ export default function Page() {
   return (
     <div className="grid grid-cols-2 w-full bg-black min-h-screen text-white">
       {/* Watchlist Section */}
-      <div className="border-r-2 border-amber-600/50 flex flex-col items-center p-6 w-full">
+      <div className="border-r-2 border-amber-600/50 flex flex-col items-center p-6 w-full max-h-screen overflow-y-auto hover:overflow-y-scroll scrollbar-hide">
         <h1 className="text-amber-500 font-bold text-3xl mb-4">Watch-List</h1>
         {watchlist.length === 0 ? (
           <p className="text-gray-400">Your saved movies will appear here.</p>
@@ -98,7 +98,7 @@ export default function Page() {
 
       {/* Watched Section */}
       <div
-        className="flex flex-col items-center p-6 w-full"
+        className="flex flex-col items-center p-6 w-full max-h-screen overflow-y-auto hover:overflow-y-scroll scrollbar-hide"
         onDrop={handleDrop}
         onDragOver={allowDrop}
       >

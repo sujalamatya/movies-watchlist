@@ -16,6 +16,7 @@
     "next": "15.1.7",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-virtualized-auto-sizer": "^1.0.25",
     "react-window": "^1.8.11",
     "tailwind-merge": "^3.0.2",
     "zustand": "^5.0.3"
