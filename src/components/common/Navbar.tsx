@@ -53,7 +53,7 @@ const Navbar: React.FC = () => {
         <ul
           className={`md:flex md:space-x-6 md:items-center top-1 ${
             isMenuOpen ? "flex" : "hidden"
-          } flex-col md:flex-row absolute md:relative bg-black md:bg-transparent top-16 left-0 w-full md:w-auto`}
+          } flex-col md:flex-row absolute md:relative bg-black md:bg-transparent top-1 left-0 w-full md:w-auto`}
         >
           {["Home", "MyMovies", "Favorites"].map((item) => (
             <li key={item} className="px-6 py-2 md:py-0">
