@@ -51,7 +51,7 @@ const Navbar: React.FC = () => {
 
         {/* Navigation Links */}
         <ul
-          className={`md:flex md:space-x-6 md:items-center top-0 ${
+          className={`md:flex md:space-x-6 md:items-center top-1 ${
             isMenuOpen ? "flex" : "hidden"
           } flex-col md:flex-row absolute md:relative bg-black md:bg-transparent top-16 left-0 w-full md:w-auto`}
         >
