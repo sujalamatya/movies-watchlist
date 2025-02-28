@@ -60,13 +60,25 @@ export default function Page() {
                 onDragStart={(event) => handleDragStart(event, movie)}
               >
                 <CardContent className="relative">
-                  <Image
-                    src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                    alt={movie.title || movie.name || "Movie Poster"}
-                    width={500}
-                    height={750}
-                    className="w-full h-full object-cover rounded transition-all duration-300 ease-in-out"
-                  />
+                  <div className="relative">
+                    <Image
+                      src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                      alt={movie.title || movie.name || "Movie Poster"}
+                      width={500}
+                      height={750}
+                      className="w-full h-full object-cover rounded transition-all duration-300 ease-in-out"
+                    />
+                    <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 hover:opacity-100 transition-opacity duration-300">
+                      <div className="flex flex-col justify-center items-center h-full text-white">
+                        <h3 className="text-xl font-bold text-amber-600">
+                          {movie.title || movie.name}
+                        </h3>
+                        <p className="mt-2 text-sm px-4">
+                          {movie.overview || "No description available."}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                 </CardContent>
                 <CardFooter className="flex justify-center">
                   <Button
@@ -115,13 +127,25 @@ export default function Page() {
                 className="w-80 shadow-lg relative overflow-hidden bg-black border-amber-600/50 hover:border-amber-600"
               >
                 <CardContent className="relative">
-                  <Image
-                    src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                    alt={movie.title || movie.name || "Movie Poster"}
-                    width={500}
-                    height={750}
-                    className="w-full h-full object-cover rounded transition-all duration-300 ease-in-out"
-                  />
+                  <div className="relative">
+                    <Image
+                      src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                      alt={movie.title || movie.name || "Movie Poster"}
+                      width={500}
+                      height={750}
+                      className="w-full h-full object-cover rounded transition-all duration-300 ease-in-out"
+                    />
+                    <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 hover:opacity-100 transition-opacity duration-300">
+                      <div className="flex flex-col justify-center items-center h-full text-white">
+                        <h3 className="text-xl font-bold text-amber-600">
+                          {movie.title || movie.name}
+                        </h3>
+                        <p className="mt-2 text-sm px-4">
+                          {movie.overview || "No description available."}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                 </CardContent>
                 <CardFooter className="flex justify-between">
                   <Button
