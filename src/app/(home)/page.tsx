@@ -1,10 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { useStore } from "@/store/useStore";
 import { Card, CardContent, CardFooter } from "@/components/common/Card";
 import { Button } from "@/components/common/Button";
-import { fetchTrendingMovies, searchMovies, Movie } from "@/api/movies";
+import { useTrendingMovies, useSearchMovies, Movie } from "@/api/movies";
 import Image from "next/image";
 
 export default function Home() {
@@ -15,35 +14,21 @@ export default function Home() {
   const removeFromWatchlist = useStore((state) => state.removeFromWatchlist);
   const setFavorite = useStore((state) => state.setFavorite);
 
-  const [movies, setMovies] = useState<Movie[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  // Fetching using TanStack Query TEST
+  const {
+    data: trendingMovies,
+    isLoading: trendingLoading,
+    error: trendingError,
+  } = useTrendingMovies();
+  const {
+    data: searchResults,
+    isLoading: searchLoading,
+    error: searchError,
+  } = useSearchMovies(searchQuery, 1);
 
-  useEffect(() => {
-    const fetchMovies = async () => {
-      setLoading(true);
-      try {
-        const movies = searchQuery
-          ? await searchMovies(searchQuery)
-          : await fetchTrendingMovies();
-
-        if (searchQuery && movies.length === 0) {
-          setError("Invalid Input: No movies found.");
-          setMovies([]);
-        } else {
-          setMovies(movies);
-          setError(null);
-        }
-      } catch (error) {
-        console.error("Error fetching movies:", error);
-        setError("Failed to fetch movies");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchMovies();
-  }, [searchQuery]);
+  const movies = searchQuery ? searchResults : trendingMovies;
+  const isLoading = searchQuery ? searchLoading : trendingLoading;
+  const error = searchQuery ? searchError : trendingError;
 
   const isInWatchlist = (movieId: number) =>
     watchlist.some((m) => m.id === movieId);
@@ -52,14 +37,18 @@ export default function Home() {
 
   return (
     <div className="flex flex-col justify-center items-center bg-black">
-      {error && <p className="text-red-500">{error}</p>}
+      {error && (
+        <p className="text-red-500">
+          {error.message || "Failed to fetch movies"}
+        </p>
+      )}
       <h1 className="flex justify-center text-3xl font-bold p-5 mt-8 text-amber-600">
         {searchQuery
           ? `Search Results for "${searchQuery}"`
           : "Trending Movies This Week"}
       </h1>
 
-      {loading && (
+      {isLoading && (
         <div className="flex text-3xl h-[85dvh] items-center text-white">
           <svg
             className="mr-3 -ml-1 size-5 animate-spin text-white"
@@ -85,13 +74,13 @@ export default function Home() {
         </div>
       )}
 
-      {!loading && movies.length === 0 && searchQuery && (
+      {!isLoading && movies?.length === 0 && searchQuery && (
         <p className="text-gray-400 text-center">
           Invalid Input: No movies found.
         </p>
       )}
 
-      {!loading && movies.length > 0 && (
+      {!isLoading && movies?.length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-y-6 gap-x-6 mt-4">
           {movies.map((movie: Movie) => (
             <Card
@@ -122,8 +111,8 @@ export default function Home() {
               <CardFooter>
                 <div className="flex justify-between w-full">
                   <Button
-                    variant={"ghost"}
-                    size={"icon"}
+                    variant="ghost"
+                    size="icon"
                     className="text-amber-600 hover:text-amber-500 hover:bg-black"
                     onClick={() => {
                       if (isInWatchlist(movie.id)) {
@@ -150,12 +139,10 @@ export default function Home() {
                   </Button>
 
                   <Button
-                    variant={"ghost"}
-                    size={"icon"}
+                    variant="ghost"
+                    size="icon"
                     className="text-amber-600 hover:text-amber-500 hover:bg-black"
-                    onClick={() => {
-                      setFavorite(movie);
-                    }}
+                    onClick={() => setFavorite(movie)}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
